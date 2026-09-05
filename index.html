@@ -1,1 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher's Day Game</title>
 
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#ffd6e8,#d8f3ff);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+
+.game{
+  width:min(92%,500px);
+  min-height:600px;
+  background:white;
+  border-radius:30px;
+  padding:25px;
+  text-align:center;
+  box-shadow:0 15px 40px rgba(0,0,0,.15);
+  position:relative;
+}
+
+h1{
+  margin:10px 0 15px;
+  font-size:30px;
+}
+
+h2{
+  margin:15px 0;
+}
+
+p{
+  margin:12px 0;
+  font-size:17px;
+}
+
+button{
+  border:none;
+  padding:14px 24px;
+  margin:8px;
+  border-radius:18px;
+  background:#ff78ad;
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{
+  transform:scale(1.06);
+}
+
+.hidden{
+  display:none;
+}
+
+.progress{
+  height:10px;
+  background:#eee;
+  border-radius:20px;
+  margin:15px 0 25px;
+  overflow:hidden;
+}
+
+.bar{
+  height:100%;
+  width:0%;
+  background:#ff78ad;
+  transition:.4s;
+}
+
+.choices{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px;
+}
+
+.choice{
+  background:#eef7ff;
+  color:#333;
+  min-width:120px;
+}
+
+.choice.correct{
+  background:#7ed6a5;
+  color:white;
+}
+
+.choice.wrong{
+  background:#ff9c9c;
+  color:white;
+}
+
+#emoji{
+  font-size:70px;
+  margin:15px;
+}
+
+.score{
+  font-size:18px;
+  font-weight:bold;
+}
+
+.target{
+  font-size:75px;
+  cursor:pointer;
+  position:absolute;
+  user-select:none;
+}
+
+#gameArea{
+  height:330px;
+  position:relative;
+  border-radius:20px;
+  background:#f7fbff;
+  overflow:hidden;
+  margin-top:15px;
+}
+
+.final{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-height:520px;
+}
+
+.final h1{
+  font-size:40px;
+  animation:pop 1s infinite alternate;
+}
+
+.confetti{
+  position:absolute;
+  font-size:25px;
+  animation:fall 3s linear infinite;
+}
+
+@keyframes pop{
+  from{transform:scale(1)}
+  to{transform:scale(1.08)}
+}
+
+@keyframes fall{
+  from{transform:translateY(-100px) rotate(0)}
+  to{transform:translateY(700px) rotate(360deg)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+<!-- START -->
+<div id="start">
+  <div id="emoji">🎮</div>
+  <h1>THE ULTIMATE<br>CHALLENGE</h1>
+  <p>Ready?</p>
+  <button onclick="startGame()">START GAME 🚀</button>
+</div>
+
+<!-- GAME -->
+<div id="playing" class="hidden">
+
+  <div class="score">⭐ Score: <span id="score">0</span></div>
+
+  <div class="progress">
+    <div class="bar" id="bar"></div>
+  </div>
+
+  <!-- LEVEL 1 -->
+  <div id="level1">
+    <h2>LEVEL 1 🧠</h2>
+    <p>Which one doesn't belong?</p>
+
+    <div class="choices">
+      <button class="choice" onclick="answer(1,false)">📚 Book</button>
+      <button class="choice" onclick="answer(1,false)">✏️ Pencil</button>
+      <button class="choice" onclick="answer(1,true)">🍕 Pizza</button>
+      <button class="choice" onclick="answer(1,false)">📝 Notebook</button>
+    </div>
+  </div>
+
+  <!-- LEVEL 2 -->
+  <div id="level2" class="hidden">
+    <h2>LEVEL 2 ⚡</h2>
+    <p>Click the ⚡ as fast as you can!</p>
+
+    <div id="gameArea">
+      <div class="target" id="target" onclick="hitTarget()">⚡</div>
+    </div>
+  </div>
+
+  <!-- LEVEL 3 -->
+  <div id="level3" class="hidden">
+    <h2>LEVEL 3 🔢</h2>
+    <p>Complete the pattern:</p>
+    <h1>2️⃣ → 4️⃣ → 8️⃣ → 16️⃣ → ?</h1>
+
+    <div class="choices">
+      <button class="choice" onclick="answer(3,false)">20</button>
+      <button class="choice" onclick="answer(3,true)">32</button>
+      <button class="choice" onclick="answer(3,false)">24</button>
+      <button class="choice" onclick="answer(3,false)">30</button>
+    </div>
+  </div>
+
+  <!-- LEVEL 4 -->
+  <div id="level4" class="hidden">
+    <h2>LEVEL 4 🎯</h2>
+    <p>Find the odd emoji!</p>
+
+    <div class="choices">
+      <button class="choice" onclick="answer(4,false)">😎</button>
+      <button class="choice" onclick="answer(4,false)">😎</button>
+      <button class="choice" onclick="answer(4,true)">🤓</button>
+      <button class="choice" onclick="answer(4,false)">😎</button>
+      <button class="choice" onclick="answer(4,false)">😎</button>
+      <button class="choice" onclick="answer(4,false)">😎</button>
+    </div>
+  </div>
+
+  <!-- LEVEL 5 -->
+  <div id="level5" class="hidden">
+    <h2>FINAL LEVEL 🏆</h2>
+    <p>One last question...</p>
+    <h2>Who is the BEST teacher? 😏</h2>
+
+    <button onclick="finishGame()">BHAIYA 😎</button>
+    <button onclick="finishGame()">BHAIYA 🔥</button>
+    <button onclick="finishGame()">BHAIYA 👑</button>
+  </div>
+
+</div>
+
+<!-- FINAL -->
+<div id="final" class="hidden final">
+  <div id="confetti"></div>
+  <div id="emoji">🏆</div>
+  <h1>HAPPY<br>TEACHER'S DAY<br>BHAIYA 🎉</h1>
+</div>
+
+</div>
+
+<script>
+
+let score=0;
+let current=1;
+let targetHits=0;
+
+function startGame(){
+  document.getElementById("start").classList.add("hidden");
+  document.getElementById("playing").classList.remove("hidden");
+  updateProgress();
+}
+
+function answer(level,correct){
+
+  if(correct){
+    score+=100;
+    document.getElementById("score").innerText=score;
+  }
+
+  document.getElementById("level"+level).classList.add("hidden");
+
+  current++;
+
+  if(current<=5){
+    document.getElementById("level"+current).classList.remove("hidden");
+  }
+
+  updateProgress();
+}
+
+function updateProgress(){
+  document.getElementById("bar").style.width=((current-1)/5*100)+"%";
+}
+
+function hitTarget(){
+
+  targetHits++;
+  score+=50;
+
+  document.getElementById("score").innerText=score;
+
+  if(targetHits>=5){
+    document.getElementById("level2").classList.add("hidden");
+    current=3;
+    document.getElementById("level3").classList.remove("hidden");
+    updateProgress();
+    return;
+  }
+
+  moveTarget();
+}
+
+function moveTarget(){
+
+  let target=document.getElementById("target");
+  let area=document.getElementById("gameArea");
+
+  let x=Math.random()*(area.clientWidth-70);
+  let y=Math.random()*(area.clientHeight-70);
+
+  target.style.left=x+"px";
+  target.style.top=y+"px";
+}
+
+function finishGame(){
+
+  document.getElementById("playing").classList.add("hidden");
+  document.getElementById("final").classList.remove("hidden");
+
+  createConfetti();
+}
+
+function createConfetti(){
+
+  let box=document.getElementById("confetti");
+
+  let emojis=["🎉","✨","🎊","⭐","🎈","🏆","💫"];
+
+  for(let i=0;i<35;i++){
+
+    let c=document.createElement("div");
+
+    c.className="confetti";
+    c.innerText=emojis[Math.floor(Math.random()*emojis.length)];
+
+    c.style.left=Math.random()*100+"%";
+    c.style.animationDelay=Math.random()*3+"s";
+
+    box.appendChild(c);
+  }
+}
+
+moveTarget();
+
+</script>
+
+</body>
+  </html>
